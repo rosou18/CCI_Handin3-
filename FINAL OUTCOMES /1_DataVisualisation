@@ -1,0 +1,101 @@
+// this is my outcome https://editor.p5js.org/rosekessler1/full/xhV_ZVG9H
+
+let npcImg, notNpcImg, customFont; 
+let totalNpcs = 50; 
+let gridRows = 5; 
+let gridCols = 10; 
+
+let npcSpacing = 20;
+
+let npcs = []; 
+let timer = 2; 
+let displaySpeed = 15; // The speed slowly accelerates 
+
+
+// Going forward I am interested in coding more data visualisation and learning the javascript library D3. 
+
+
+function preload() {
+  npcImg = loadImage("npc.png");
+  notNpcImg = loadImage("notnpc.png"); // This character reprents the 2% of GenZ who don't have social media.
+  
+  customFont = loadFont("font.ttf"); 
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+
+  // I found this code in the P5js library and completely forgot to save the references. But for this section I used chatgpt to calculate the caracthers dimensions to fit the grid. 
+  
+  let availableWidth = windowWidth - (gridCols - 1) * npcSpacing;
+  let availableHeight = windowHeight - (gridRows - 1) * npcSpacing;
+  npcWidth = Math.floor(availableWidth / gridCols);
+  npcHeight = Math.floor(availableHeight / gridRows);
+
+  frameRate(displaySpeed); 
+  initializeNpcs();
+  imageMode(CENTER); 
+}
+
+function initializeNpcs() {
+  // This part maps out the grid of 50 characters 
+  let count = 0;
+  for (let row = 0; row < gridRows; row++) {
+    for (let col = 0; col < gridCols; col++) {
+      let isNotNpc = count === totalNpcs - 1; // This section is to mark out of place character
+      npcs.push({
+        x: col * (npcWidth + npcSpacing) + npcWidth / 2,
+        y: row * (npcHeight + npcSpacing) + npcHeight / 2,
+        scale: 0, 
+        isNotNpc: isNotNpc,
+        displayed: false,
+      });
+      count++;
+      if (count >= totalNpcs) break; // this is to stop when all the visuals are displayed
+    }
+    if (count >= totalNpcs) break;
+  }
+}
+
+function draw() {
+  background('white'); 
+
+  textFont(customFont);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text("Are you connected?", width / 2, height / 2); 
+  
+  // Chatgpt helped me make this cool loop which animates the characters by smoothly growing as they appear. Using lerp which I had already used in my tests. 
+  for (let i = 0; i < npcs.length;
+       i++) {
+    let npc = npcs[i];
+    if (i <= timer) {
+      if (!npc.displayed) {
+     
+        npc.scale = lerp(npc.scale, 1, 0.1);
+        if (npc.scale > 0.99) {
+          npc.scale = 1;
+          npc.displayed = true;
+        }
+      }
+
+      // This section adds the outcast character at the end of the grid
+      let img = npc.isNotNpc ? notNpcImg : npcImg;
+
+      // This is to calculate a proportional dimensions
+      let scaleFactor = Math.min(npcWidth / img.width, npcHeight / img.height) * npc.scale;
+      let drawWidth = img.width * scaleFactor;
+      let drawHeight = img.height * scaleFactor;
+
+      image(img, npc.x, npc.y, drawWidth, drawHeight);
+    }
+  }
+
+  // This timer helps create the chain reaction of characters 
+  if (timer < totalNpcs - 1) {
+    timer++;
+  }
+}
+
+
+

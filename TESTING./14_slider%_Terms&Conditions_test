@@ -1,0 +1,26 @@
+let slider;
+let percentage = 0; 
+
+function setup() {
+  createCanvas(400, 200);
+  
+  // I wanted to deisgn a slider similare to Apple's UI 
+  slider = createSlider(0, 100, 50, 1); 
+  slider.position(50, height / 2); 
+  slider.style('width', '300px'); 
+}
+
+function draw() {
+  
+  percentage = slider.value();
+  
+  // I wanted to calculate the level of brightness based on the slider
+  let grayLevel = map(percentage, 0, 100, 0, 255);
+  background(grayLevel); 
+
+  fill('white');
+  textSize(18);
+  textAlign(CENTER, CENTER);
+  fill(grayLevel > 128 ? 0 : 255); // This was to adjust the color of the text depending on the background 
+  text(`Accept Terms and Conditions ${percentage}%  `, width / 2, height / 4);
+}

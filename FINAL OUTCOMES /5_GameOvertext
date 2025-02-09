@@ -1,0 +1,46 @@
+let font;
+let textLines = [
+  { text: "GAME", x: 400, y: 400 },
+  { text: "OVER", x: 400, y: 600 },
+];
+let points = [];
+
+function preload() {
+  font = loadFont("https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Regular.otf");
+}
+// Game over This code was inspired by a code I found online - which I forgot to save and reference ...But it was much more complex version which used CSS. I asked Chatgpt to help me simply the code in more flexible measurements. 
+function setup() {
+  createCanvas(800, 800);
+  stroke(307, 0, 0);// this makes the text red
+  strokeWeight(1.5);
+  noCursor();
+
+  // The text.line.text represent the game over text. Generate points for each text line, wherease line.x and line.y position it. This allows text to be drawn using points instead of regular letters.
+  // The coder had initially created an array of points to create a 3D shape of the text.
+  for (let line of textLines) {
+    let linePoints = font.textToPoints(line.text, line.x, line.y, 130, {
+      sampleFactor: 0.5,
+      //This is modifies the density between the lines, the original code was much more spaced out.
+    
+    });
+    points.push(...linePoints);
+  }
+}
+
+function draw() {
+  background(0);
+  // this loop is what makes the text move with the mouse position. Creating dynamic lines around points based on the mouse position.
+
+  for (let i = 0; i < points.length; i++) {
+    const { x, y } = points[i];
+    const distance = dist(mouseX, mouseY, x, y);
+    let lineLength = map(distance, 0, 100, 14, 1);
+//Based on the angle (atan2) and the distance of the mouse (dist())  the map() make the line longer or smaller depending on it's distance.
+    let angle = atan2(mouseY - y, mouseX - x);
+    let x1 = x - (lineLength / 2) * cos(angle);
+    let y1 = y - (lineLength / 2) * sin(angle);
+    let x2 = x + (lineLength / 2) * cos(angle);
+    let y2 = y + (lineLength / 2) * sin(angle);
+// drawing the line at each point and creating an interactive effect.
+    line(x1, y1, x2, y2);
+  }  }

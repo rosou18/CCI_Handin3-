@@ -1,0 +1,98 @@
+
+let terms = [];
+let accepted = false;
+let declined = false;
+
+function setup() {
+  createCanvas(400, 500);
+
+  // This outcome is a product of all my research and prototyping. Using scale factor once again to play with the movement of srolling and information overload which is one of the most common dark patterns. Using satire felt like to most eye catching way to narrate my terms and conditions.
+  
+  terms.push(`Honest Terms and Conditions: Do you allow access to your phone?
+
+Hate to break it to you, but this app isn’t free... you’re the product, and your data fuels our profit-driven company and unsustainable lifestyles.
+Come on, cheer up! The planet is going to die anyways!
+
+The moment you accept, your personal information will be sold to lawless data brokers who can determine everything about you.
+Your guilty pleasures, gloomy Sunday routine, your crush, medical history, where you live, and even your deepest, darkest secrets. Your search history in itself is a gold mine!
+
+You have nothing to hide anyways... apart from that embarrassing love poem you sent to Brad Pitt. Or the late-night search about STDs. Actually, don't get me started on the hateful comments to the Crocs Convention... Privacy is an illusion anyways. We know who you really are, even when you think no one’s watching.
+
+What could possibly happen, right? Apart from your file ending up on Axciom, the biggest data evil corporation of them all! Recently bought for a mere $2.3 billion, making it possible to buy your personal details for only $25. A badly intentioned stalker could find your details in no time. Or a hacker empties your account, or a blackmailer uses your cheeky photos against you. Maybe an employer or insurer has already combed through your medical records.
+
+Still scrolling? Ignore this warning—mindless content awaits. After all, isn’t Barbara’s cat video worth 9,999 years of tracking? 😉`);
+}
+
+function draw() {
+  background('white'); 
+
+  if (!accepted && !declined) {
+ 
+    let scaleFactor = map(mouseY, 0, height, 24, 10); // This code is taken by my test "information overload". I  experimented with scrolling and text. 
+    textSize(constrain(scaleFactor, 10, 40)); // These are the limits of the text size.
+    textAlign(CENTER, TOP);
+    textWrap(WORD);
+    fill('black'); 
+    text(terms[0], width / 2, 20, width - 40); // This is so that the is displayed horizontally
+
+    // This is the accept button
+    fill('red'); 
+    rectMode(CENTER);
+    rect(width / 2 - 100, height - 50, 120, 40, 20); // Chatgpt added round corners and I liked it 
+    fill('white'); 
+    textSize(16);
+    textAlign(CENTER, CENTER);
+    text("Accept", width / 2 - 100, height - 50);
+    
+    // This is the identical decline button
+    fill('#216EF3');
+    rect(width / 2 + 100, height - 50, 120, 40, 20);
+    fill('white'); 
+    text("Decline", width / 2 + 100, height - 50); 
+    
+  } else if (accepted) {
+  
+    background('white'); 
+    fill('black'); 
+    textSize(24);
+    textAlign(CENTER, CENTER);
+    text("Keep calm and carry on", width / 2, height / 2);
+  } else if (declined) {
+    
+    background('white'); 
+    fill('black'); 
+    textSize(24);
+    textAlign(CENTER, CENTER);
+    text("Your privacy is a illusion", width / 2, height / 2);
+  }
+}
+
+
+//This fuction tracks which button the user clicks on
+
+function mousePressed() {
+  // This section is for accept 
+  if (
+    !accepted &&
+    !declined &&
+    mouseX > width / 2 - 160 &&
+    mouseX < width / 2 - 40 &&
+    mouseY > height - 70 &&
+    mouseY < height - 30
+  ) {
+    accepted = true;
+  }
+
+  // This section is for decline
+  if (
+    !accepted &&
+    !declined &&
+    mouseX > width / 2 + 40 &&
+    mouseX < width / 2 + 160 &&
+    mouseY > height - 70 &&
+    mouseY < height - 30
+  ) {
+    declined = true;
+  }
+}
+

@@ -1,0 +1,26 @@
+int sensorPin = A3;
+int sensorValue = 0; 
+int Val
+int buttonState=0;
+void setup()
+{
+  pinMode(2, INPUT_PULLUP); //CHANGE THE PINMODE TO BE INPUT_PULLUP
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600);  
+}
+
+void loop()
+{
+  buttonState = digitalRead(2);
+ 
+  if (digitalRead(2) == HIGH) { //WHAT MIGHT YOU NEED TO CHANGE IN THE LOGIC CONDITION ?
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+  else{
+   digitalWrite(LED_BUILTIN, LOW); 
+  
+}
+
+Serial.println(buttonState);
+  delay(10); 
+}

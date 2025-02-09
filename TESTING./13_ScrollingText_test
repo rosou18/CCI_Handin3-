@@ -1,0 +1,20 @@
+//This scrolling code was made by using Carrie Wang's work 
+
+let content = 'Break the cycle now or its bound to repeat '; 
+let yStart = 0; // this is to for the starting position of the text 
+
+function setup() {
+  createCanvas(400, 400);
+  textAlign(CENTER, CENTER); 
+  textSize(21); 
+}
+
+function draw() {
+  background('black');
+  //The for loop draws the rows of lines vertically 
+  for (let y = yStart; y < height; y += 28) { 
+    fill('255', y / 2 + 55, 100); //This part is for the cool gradient made by linking the fill color with the location of the text
+    text(content, width / 2, y); 
+  }
+  yStart--; //Carrie explains that she moves the starting point of the loop up to create the scrolling animation, yStart-- is the same as yStart = yStart -1 or yStart-=1
+}

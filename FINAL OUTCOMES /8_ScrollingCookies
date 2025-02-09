@@ -1,0 +1,73 @@
+// this is the link to the outcome https://editor.p5js.org/rosekessler1/full/m_KaKHS2P
+
+let cookies = []; 
+let speedCookies = 3;
+let waveLenght = 100; 
+let waveRate = 0.06;
+let spacing = 150; 
+let cookieImages = [];
+let cookiePositions = [];
+let customFont;// I wanted all the fonts to be coherent throughout my code
+let textX;
+
+function preload() {
+  // I chose monocode from Dafont.com to be consistent and cohesive. 
+  customFont = loadFont('font.ttf');
+  
+  // For this part of the code I made 5  illustrations representing trackers. I explain  more about the types of cookies in my slide presentation.
+  cookieImages.push(loadImage('1cookies.png'));
+  cookieImages.push(loadImage('2cookies.png'));
+  cookieImages.push(loadImage('3cookies.png'));
+  cookieImages.push(loadImage('4cookies.png'));
+  cookieImages.push(loadImage('5cookies.png'));
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight); 
+  textFont(customFont);
+  textSize(32); 
+  textX = width; // Starting point of my rolling text
+
+  // From this point Chatgpt was really helpful in curating and mixing my multiple samples of code. Going forward I'm interested in exploring more visual peotry.
+  
+  for (let i = 0; i < height / spacing + 2; i++) {
+    cookiePositions.push(height - i * spacing);
+  }
+}
+
+function draw() {
+  background('black'); 
+  fill('white'); 
+  text("When was the last time you emptied your cookies ? ", textX, height / 2);
+
+
+  textX -= 4; // This is the speed of the text
+
+  // this is to create a loop of the scrolling text 
+  if (textX < -textWidth("When was the last time you emptied your cookies ?")) {
+    textX = width;
+  }
+  
+ // For this wave movement was inspired by my first test and research around the movement of scrolling. I wanted to imitate doom scrolling with text and images.I found the wave effect in strangers code in the P5js library.
+
+  for (let i = 0; i < cookiePositions.length; i++) {
+    let waveOffset = sin((frameCount * waveRate) + (i * TWO_PI / cookiePositions.length)) * waveLenght;
+
+
+    let cookieIndex = i % cookieImages.length; 
+    let cookieImage = cookieImages[cookieIndex];
+    let aspectRatio = cookieImage.width / cookieImage.height; 
+    let imageHeight = 90; 
+    let imageWidth = imageHeight * aspectRatio; // 
+
+    image(cookieImage, width / 2 + waveOffset, cookiePositions[i], imageWidth, imageHeight);
+
+    // So that the cookies go top to bottom
+    cookiePositions[i] -= speedCookies;
+
+    // This part is to create an endless loop of cookies
+    if (cookiePositions[i] < -spacing) {
+      cookiePositions[i] += cookiePositions.length * spacing;
+    }
+  }
+}

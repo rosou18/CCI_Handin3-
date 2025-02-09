@@ -1,0 +1,75 @@
+// // this is the link to the outcome https://editor.p5js.org/rosekessler1/full/u7mjJa5bN
+let cookieImgs = [];
+let cookies = []; 
+let maxCookies = 50; 
+let addCookieInterval = 15; 
+let customFont;
+
+function preload() {
+  // This was the first time I managed to integrate my illustration in my coding. Which was really important since I aspire to be multidisciplinary and exploring mixed media trough different mediums. It also helped create a more polished outcome.
+  cookieImgs.push(loadImage('cookie.png')); 
+  cookieImgs.push(loadImage('cookies.png')); 
+  cookieImgs.push(loadImage('cookiess.png')); 
+  
+  customFont = loadFont('Font.ttf');// I wanted to be consistent with my font - I chose Monocode from Dafont.com. This was to create a consistent and coherent visual identity throughout my darkpatterns.
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight); // this is my favourite size :D
+  noCursor(); //Chatgpt added this to remove the original mouse icon. Which I thought was visually interesting and good to know - but not really necessary.
+  
+  cookies.push(createCookie());
+}
+
+function draw() {
+  background(255); 
+ 
+  textFont(customFont);
+  textSize(36);
+  fill('black'); 
+  textAlign(CENTER, CENTER);
+  text("Ever feel like you're being watched?", width / 2, height / 2); 
+  
+  // Follow mouse with a smooth movement
+  let mouseFollowSpeed = 0.04; 
+  
+  for (let i = 0; i < cookies.length; i++) {
+    let cookie = cookies[i];
+    
+    // This part of the code is to create an effect of random invasion coming from everyside of the screen towards the mouse.
+    cookie.targetX = lerp(cookie.targetX, mouseX + random(-100, 100), mouseFollowSpeed);
+    cookie.targetY = lerp(cookie.targetY, mouseY + random(-100, 100), mouseFollowSpeed);
+    
+    // The lerp function is was creates the smooth movement and tracking of the cookies.
+
+    cookie.x = lerp(cookie.x, cookie.targetX, 0.05);
+    cookie.y = lerp(cookie.y, cookie.targetY, 0.05);
+    
+  
+    image(cookie.img, cookie.x - cookie.width / 2, cookie.y - cookie.height / 2, cookie.width, cookie.height);
+  }
+  
+  // This is to endlessy add cookies
+  if (frameCount % addCookieInterval === 0) {
+    cookies.push(createCookie());
+  }
+
+}
+
+function createCookie() {
+  let img = random(cookieImgs); 
+  let sizeFactor = random(0.05, 0.12); 
+  let width = img.width * sizeFactor;
+  let height = img.height * sizeFactor;
+  
+  // This part for the random generation of the cookies in the screen.
+  return {
+    x: random(0, width), 
+    y: random(0, height),
+    targetX: random(-width, windowWidth + width), 
+    targetY: random(-height, windowHeight + height),
+    img: img,
+    width: width,
+    height: height
+  };
+}

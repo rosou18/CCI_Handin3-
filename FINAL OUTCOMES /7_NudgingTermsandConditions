@@ -1,0 +1,155 @@
+let rejectX, rejectY; 
+let targetX, targetY; 
+let acceptX, acceptY; 
+let boxWidth = 120, boxHeight = 50;
+let rejectWidth = 120, rejectHeight = 50; 
+let acceptWidth = 120, acceptHeight = 50; 
+let notifications = [];
+let customFont;
+
+// This outcome merges a few of my prototypes. 
+
+const rejectMessages = [
+  "try again later",
+  "noooooooooooo",
+  "You have nothing to hide anyways",
+  "Error 404.",
+  "Sharing is caring",
+  "The cat gif is worth it.",
+  "You have nothing to worry about",
+  
+];
+
+const messages = [
+ 
+  "We'll have access for 999 years",
+  "Your soul belongs to us now",
+  "Big data thanks you!",
+  "Our data brokers thank you",
+  "Your privacy is an illusion",
+  "We're always watching.",
+  "You have nothing to hide anyways.",
+  "In Big Data we trust",
+  "Keep calm and carry on"
+];
+
+function preload() {
+  customFont = loadFont('font.ttf'); 
+}
+
+function setup() {
+  createCanvas(500, 500);
+  textFont(customFont); 
+  textSize(15); 
+  rejectX = random(width - rejectWidth);
+  rejectY = random(height - rejectHeight);
+  targetX = rejectX;
+  targetY = rejectY;
+  acceptX = width / 2 - acceptWidth / 2;
+  acceptY = height - 100;
+}
+
+function draw() {
+  background('white'); 
+  animateRejectBox(); // This function is to gamify the dark pattern. Making the Reject all box feel like it's escaping the audience.
+  drawRejectBox();
+  drawAcceptBox();
+  displayNotifications();
+}
+
+
+function drawRejectBox() {
+  fill(255, 0, 0); 
+  rect(rejectX, rejectY, boxWidth, boxHeight, 10); // I like the rounded corners
+  fill('white');
+  textAlign(CENTER, CENTER);
+  text("Decline", rejectX + boxWidth / 2, rejectY + boxHeight / 2);
+}
+
+function drawAcceptBox() {
+  fill('blue'); 
+  rect(acceptX, acceptY, boxWidth, boxHeight, 10);
+  fill('white'); 
+  textAlign(CENTER, CENTER);
+  text("Accept", acceptX + boxWidth / 2, acceptY + boxHeight / 2);
+}
+
+
+function mousePressed() {
+  if (isMouseOverRejectBox()) {
+    moveRejectBox(); // This is so that the box moves randomly accross the screen
+    let randomRejectMessage = random(rejectMessages); // And this is so that it generates a random prompt 
+    spawnNotification(randomRejectMessage, 'reject'); 
+  }
+
+  if (isMouseOverAcceptBox()) {
+    for (let i = 0; i < 3; i++) {
+      if (messages.length > 0) {
+        let message = messages.shift(); // This is to get the next message
+        spawnNotification(message, 'accept');  
+      }
+    }
+  }
+}
+
+function isMouseOverRejectBox() {
+  return (
+    mouseX > rejectX &&
+    mouseX < rejectX + rejectWidth &&
+    mouseY > rejectY &&
+    mouseY < rejectY + rejectHeight
+  );
+}
+
+function isMouseOverAcceptBox() {
+  return (
+    mouseX > acceptX &&
+    mouseX < acceptX + acceptWidth &&
+    mouseY > acceptY &&
+    mouseY < acceptY + acceptHeight
+  );
+}
+
+function moveRejectBox() {
+  targetX = random(0, width - rejectWidth);
+  targetY = random(0, height - rejectHeight);
+}
+
+function animateRejectBox() {
+  
+  let easing = 0.1; 
+  rejectX += (targetX - rejectX) * easing;
+  rejectY += (targetY - rejectY) * easing;
+}
+
+function spawnNotification(message, type) {
+  let notification = {
+    x: random(width - 300), 
+    y: random(height - 100), 
+    width: 300,
+    height: 50,
+    text: message, // this is what will be displayed on the notification 
+    type: type 
+  };
+  notifications.push(notification);
+}
+
+function displayNotifications() {
+  for (let i = 0; i < notifications.length; i++) {
+    let n = notifications[i];
+    
+ // I used chatgpt to make the notification cohesive with the chosen button
+    if (n.type === 'accept') {
+      fill('rgb(62,92,255)'); 
+    } else if (n.type === 'reject') {
+      fill('rgb(255,50,50)'); 
+    }
+    
+    stroke(0);
+    rect(n.x, n.y, n.width, n.height, 5); // Notification background
+    fill(255); 
+    noStroke();
+    textAlign(LEFT, CENTER);
+    text(n.text, n.x + 10, n.y + n.height / 2); // 
+  }
+}

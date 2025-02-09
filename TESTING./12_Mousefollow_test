@@ -1,0 +1,52 @@
+// https://editor.p5js.org/rosekessler1/full/6uUc2YOBH this is my original code 
+
+let cursorImg; 
+let eyes = []; 
+let addEyeInterval = 8; 
+
+function preload() {
+  cursorImg = loadImage('eye.png'); 
+}
+
+function setup() {
+  createCanvas(windowHeight, windowWidth); 
+
+}
+// The eye invasion is my prototype for the cookie tracking outcome. Even though I prefer this minimalist visual representing cookies spying a users screen. 
+
+function draw() {
+  background('black');
+  
+  // Setting the size so that the image wouldn't be deformed 
+  let imgWidth = 70;
+  let imgHeight = 70;
+
+  // For this I used Chatgpt to help me visualise cookies tracking the users mouse 
+  for (let i = 0; i < eyes.length; i++) {
+    let eye = eyes[i];
+// I used a for loop to generate endless amount of cookies 
+    
+    eye.targetX = lerp(eye.targetX, mouseX + random(-30, 30), 0.03);
+    eye.targetY = lerp(eye.targetY, mouseY + random(-30, 30), 0.03);
+ //This bit of the code is so that cookies smoothly follow the mouse and to control the speed 
+      eye.x = lerp(eye.x, eye.targetX, 0.05);
+    eye.y = lerp(eye.y, eye.targetY, 0.05);
+//  lerp (linear interpolation) is to track the position of the mouse and change the target and speed 
+ 
+
+    image(cursorImg, eye.x - imgWidth / 2, eye.y - imgHeight / 2, imgWidth, imgHeight);
+    
+  }
+
+  // this part of the code is to generate new cookies from random parts of the screen 
+  if (frameCount % addEyeInterval === 0) {
+    eyes.push({
+      x: random(width), 
+      y: random(height),
+      targetX: random(width),
+      targetY: random(height)
+    });
+  }
+
+ 
+}

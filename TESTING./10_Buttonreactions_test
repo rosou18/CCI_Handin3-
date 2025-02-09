@@ -1,0 +1,120 @@
+let colors = ['red', 'blue'];
+let data2 = [];
+let buttonSize = 90;
+
+
+let messages = ["Nooooo", "Give me you data", "Pretty Please","hehehehe"];
+
+let customFont; 
+
+function preload() {
+
+  customFont = loadFont('font.ttf');
+}
+
+function setup() {
+  createCanvas(windowHeight , windowWidth );
+  textAlign(CENTER, CENTER);
+  angleMode(DEGREES);
+
+  
+  textFont(customFont);
+  textSize(35); 
+}
+
+function draw() {
+  background('white');
+  fill('black'); 
+  text('Are you sure ?', width / 2, height / 2 - 100); 
+  
+  drawButton(width / 2 - 100, height / 2, buttonSize, '#007BFF', 'Accept'); 
+  drawButton(width / 2 + 100, height / 2, buttonSize, '#DC3545', 'Decine'); 
+
+  // This loop is for the reactions when the button is pressed.Changing the position depending on the angle and position.
+  for (let i = data2.length - 1; i >= 0; i--) {
+    let d = data2[i];
+// I don't fully understand this line of code. It calculates the angle of projection in a circular path
+    d.pos.x += cos(d.angle) * d.motion;
+    d.pos.y += sin(d.angle) * d.motion;
+
+    let distance = dist(width / 2, height / 2, d.pos.x, d.pos.y);
+    // This part is to make the notification become smaller and eventually disappear.
+
+    let shrink = map(distance, 0, 200, 1, 0);
+    shrink = constrain(shrink, 0, 1);
+
+
+    push();
+    translate(d.pos.x, d.pos.y);
+    rotate(d.angle + 90);
+
+    let size = 50 * d.sf * shrink; 
+    fill(d.c);
+    noStroke();
+    textSize(size);
+    textStyle(BOLD);
+    text(d.txt, 0, 0);
+    pop();
+  }
+}
+
+function drawButton(x, y, size, color, label) {
+  push();
+  rectMode(CENTER);
+
+  fill(color);
+  stroke(0, 40);
+  circle(x, y, size);
+
+  fill(255, 180);
+  noStroke();
+  circle(x, y, size * 0.75);
+
+  fill(255);
+  textSize(16);
+  textStyle(BOLD);
+  text(label, x, y);
+  pop();
+}
+
+function mousePressed() {
+  if (dist(mouseX, mouseY, width / 2 - 100, height / 2) < buttonSize / 2) {
+    console.log("Accepted!");
+    createNotifications(-100); 
+  } else if (dist(mouseX, mouseY, width / 2 + 100, height / 2) < buttonSize / 2) {
+    console.log("Declined!");
+    createNotifications(100); 
+  }
+}
+
+function createNotifications(offsetX) {
+  let color; // This variable is for the text colour to be coherent to the button clicked. 
+
+  
+  if (offsetX < 0) {
+    color = 'blue'; 
+  } else {
+    color = 'red'; 
+  }
+
+  for (let i = 0; i < 5; i++) { 
+    let r = random(50, 100);
+    let angle = random(360);
+
+    let x = width / 2 + offsetX + cos(angle) * r;
+    let y = height / 2 + sin(angle) * r;
+    let pos = createVector(x, y);
+
+    let sf = random(0.5, 1);
+    let txt = random(messages);
+
+    data2.push({
+      angle: angle,
+      pos: pos,
+      motion: random(1, 3), // Random is present in most of mu code, I enjoyed visualising unpredictable reactions.
+      sf: sf,
+      c: color, 
+      txt: txt,
+    });
+  }
+}

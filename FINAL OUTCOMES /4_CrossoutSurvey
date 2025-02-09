@@ -1,0 +1,75 @@
+
+// this is the link to my final outcome https://editor.p5js.org/rosekessler1/full/0w8rPyrwl
+let questions = [
+  "Would you let someone go through your phone?",
+  "Would you share your search history?",
+  "Would you send your address to a stranger?",
+  "Would you post your medical records?"
+];
+//
+
+let crossedOut = [];
+let score = 0;
+let customFont;
+
+function preload() {
+  customFont = loadFont("font.ttf"); 
+}
+
+function setup() {
+  createCanvas(600, 400);
+  textAlign(LEFT, CENTER);
+  textFont(customFont);
+
+  // Load saved data or initialize all as unchecked
+  crossedOut = JSON.parse(localStorage.getItem("surveyData")) || Array(questions.length).fill(false);
+  updateScore();
+}
+
+// this is the code I struggled with the most. I heavily relied on chatgpt to make me a percentage code that worked.
+
+function draw() {
+  background(245);
+  
+  textSize(30);
+  text("Everyone has secrets", 30, 30);
+  
+  textSize(16);
+  for (let i = 0; i < questions.length; i++) {
+    let y = 80 + i * 40;
+    text(questions[i], 20, y);
+// This loop process each line in the questions array - i represent the current chosen question.
+    if (crossedOut[i]) {
+      stroke(255, 0, 0);
+      strokeWeight(1.5);
+      line(20, y, 20 + textWidth(questions[i]), y); // This is assure that the question is crossed out.
+      noStroke();
+    }
+  }
+
+  textSize(20);
+  text(`Big Data already knows: ${score}%`, 20, height - 50);
+}
+//  I had isses with my updateScore() which would never be redrawn in draw().
+
+
+function mousePressed() {
+ 
+  for (let i = 0; i < questions.length; i++) {
+    let y = 80 + i * 40;
+    if (mouseY > y - 10 && mouseY < y + 10 && mouseX < 20 + textWidth(questions[i])) {
+      crossedOut[i] = !crossedOut[i]; 
+      //  The y is the position of each question and the  mouse pressed fuction checks if the user clicks in the right area.
+      updateScore();
+ 
+    }
+  }
+}
+
+function updateScore() {
+  score = (crossedOut.filter(Boolean).length / questions.length) * 100; // Calculate percentage
+}
+
+// The update score works based on how many questions are crossed out. I used a Boolean, a true or false data type and multiplied by 100 to convert my percentage.
+
+

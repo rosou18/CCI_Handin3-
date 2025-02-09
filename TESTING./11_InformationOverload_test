@@ -1,0 +1,30 @@
+let Lines = [];
+let numLines = 15; 
+
+// this is my test for the Dark pattern of information overload
+function setup() {
+  createCanvas(400, 400);
+
+  // I knew I wanted to experiment with the movement of going from top to bottom on a screen. Scrolling has become second nature to us and I wanted to imitate our behaviour when rushing through terms and conditions.
+  
+  for (let i = 0; i < numLines; i++) {
+    Lines.push(`Information or influence ?`);
+  }
+
+}
+
+function draw() {
+  background(255);
+
+  // Scale factor helped me make my code interactive, by vertically tracking my mouse and calculating the size depending on it's position.With the type being big at the top and small at the bottom.
+  let scaleFactor = map(mouseY, 0, height, 100, 10); //
+
+  // This loop is to space out the lines crescendo in size.
+  for (let i = 0; i < Lines.length; i++) {
+    let yPosition = map(i, 0, Lines.length - 1, 50, height - 50); 
+    // This is to evenly spread the lines vertically
+     textSize(scaleFactor - i * 5);
+    textAlign(LEFT, CENTER);
+    text(Lines[i], 20, yPosition);
+  }
+}
